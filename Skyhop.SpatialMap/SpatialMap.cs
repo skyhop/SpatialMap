@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Skyhop.SpatialMap
@@ -17,7 +18,7 @@ namespace Skyhop.SpatialMap
      * - Find nearby elements based on a maximum distance
      */
 
-    public class SpatialMap<T>
+    public class SpatialMap<T> : IEnumerable<T>, IEnumerator<T>
     {
         private readonly object _mutationLock = new object();
         private readonly Func<T, double> _xAccessor;
@@ -31,8 +32,15 @@ namespace Skyhop.SpatialMap
             _yAccessor = yAccessor;
         }
 
-        private CustomSortedList<double, List<T>> _x { get; set; } = new CustomSortedList<double, List<T>>();
-        private CustomSortedList<double, List<T>> _y { get; set; } = new CustomSortedList<double, List<T>>();
+        private CustomSortedList<double, List<T>> _x { get; } = new CustomSortedList<double, List<T>>();
+        private CustomSortedList<double, List<T>> _y { get; } = new CustomSortedList<double, List<T>>();
+
+        private int _xIndex = 0;
+        private int _subXIndex = -1;
+        private bool disposedValue;
+
+        public T Current => _x.GetByIndex(_xIndex)[_subXIndex];
+        object IEnumerator.Current => Current;
 
         public void Add(T element)
         {
@@ -278,6 +286,51 @@ namespace Skyhop.SpatialMap
                     }
                 }
             }
+        }
+
+        public IEnumerator<T> GetEnumerator() => this;
+        IEnumerator IEnumerable.GetEnumerator() => this;
+
+        public bool MoveNext()
+        {
+            _subXIndex++;
+            if (_x.GetByIndex(_xIndex).Count == _subXIndex)
+            {
+                _xIndex++;
+                _subXIndex = 0;
+            }
+
+            if (_x.Count == _xIndex) return false;
+
+            return true;
+        }
+
+        public void Reset()
+        {
+            _xIndex = 0;
+            _subXIndex = -1;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
