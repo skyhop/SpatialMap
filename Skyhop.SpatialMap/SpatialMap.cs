@@ -242,6 +242,11 @@ namespace Skyhop.SpatialMap
             var x = _xAccessor(element);
             var y = _yAccessor(element);
 
+            return Nearby(x, y, distance);
+        }
+
+        public IEnumerable<T> Nearby(double x, double y, double distance)
+        {
             // Compensating the inner distance like this reduces the potential
             // number of potential matches by 10% in an evenly distributed scatter
             var innerDistance = Math.Sqrt(Math.Pow(distance, 2) / 2);
