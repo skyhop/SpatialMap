@@ -11,6 +11,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>This package contains a data type which supports projection of an object onto a 2D X/Y grid. It is meant to quickly locate objects around a certain coordinate, and doesn't support lookup by values. This object is implemented on top of the SortedList type and therefore uses a binary search for object location.</Description>
     <Copyright>(c) Whaally 2020</Copyright>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
 </Project>
