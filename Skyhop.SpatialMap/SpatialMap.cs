@@ -111,6 +111,11 @@ namespace Skyhop.SpatialMap
             var x = _xAccessor(element);
             var y = _yAccessor(element);
 
+            return Nearest(x, y);
+        }
+
+        public T Nearest(double x, double y) 
+        {
             T nearest = default;
 
             var approxX = _x.RoughIndexOfKey(x);
